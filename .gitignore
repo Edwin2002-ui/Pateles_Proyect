@@ -1,0 +1,59 @@
+# ------------------------------------------------
+# Variables de Entorno y Seguridad (CRÍTICO)
+# ------------------------------------------------
+# Ignora el archivo real con las claves secretas
+.env
+.env.local
+.env.*.local
+
+# EXCEPCIÓN: Mantén el archivo de ejemplo para que otros 
+# desarrolladores sepan qué variables necesita el proyecto.
+!.env.example
+
+# ------------------------------------------------
+# Composer
+# ------------------------------------------------
+# Ignora la carpeta donde se descargan las librerías
+/vendor/
+
+# Ignora el archivo ejecutable de composer si lo tienes localmente
+composer.phar
+
+# NOTA: Generalmente se DEBE commitear 'composer.lock' en aplicaciones
+# para asegurar versiones exactas. Si estás creando una librería, 
+# podrías querer ignorarlo, pero por defecto no lo pongo aquí.
+
+# ------------------------------------------------
+# Logs y Archivos Temporales de PHP
+# ------------------------------------------------
+error_log
+php_errors.log
+debug.log
+
+# ------------------------------------------------
+# Tests (PHPUnit)
+# ------------------------------------------------
+.phpunit.result.cache
+/phpunit.xml
+
+# Mantenemos la configuración dist (ejemplo) de PHPUnit
+!/phpunit.xml.dist
+
+# ------------------------------------------------
+# IDEs y Sistema Operativo (Opcional pero recomendado)
+# ------------------------------------------------
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Mac OS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# PHPStorm / JetBrains
+.idea/
+*.iws
+*.iml
+*.ipr

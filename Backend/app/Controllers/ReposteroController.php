@@ -4,7 +4,7 @@ namespace App\Controllers;
 use App\Core\Response;
 use App\Models\Repostero;
 
-class ReposteroController {
+class ReposteroController{
 
     private $reposteroModel;
     public function __construct() {

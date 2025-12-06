@@ -1,0 +1,79 @@
+CREATE DATABASE IF NOT EXISTS pasteles;
+USE pasteles;
+
+-- 1. TABLA USERS
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NULL,
+    google_id VARCHAR(255) NULL UNIQUE,
+    google_avatar VARCHAR(500) NULL,
+    auth_provider ENUM('local', 'google') NOT NULL DEFAULT 'local',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME NULL,
+    deleted BOOLEAN DEFAULT FALSE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+--2. TABLA RESPOSTEROS
+CREATE TABLE reposteros(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(255) NOT NULL,
+    apellidos VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME NULL,
+    deleted BOOLEAN DEFAULT FALSE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- 3. TABLA PASTEL
+CREATE TABLE Pastel (
+    ID_pastel INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion TEXT,
+    Preparado_por INT,
+    Fecha_creacion DATE,
+    Fecha_Vencimiento DATE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME NULL,
+    deleted BOOLEAN DEFAULT FALSE,
+   
+    FOREIGN KEY (Preparado_por) REFERENCES reposteros(id) ON DELETE RESTRICT
+    FOREIGN KEY (created_by) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- 4. TABLA INGREDIENTE
+CREATE TABLE Ingrediente (
+    ID_ingrediente INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion TEXT,
+    Fecha_ingreso DATE,
+    Fecha_Vencimiento DATE,
+    created_by INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME NULL,
+    deleted BOOLEAN DEFAULT FALSE,
+   
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- 5. TABLA PASTEL_INGREDIENTES
+CREATE TABLE Pastel_Ingredientes (
+    ID_Pastel_Ingrediente INT AUTO_INCREMENT PRIMARY KEY,
+    ID_pastel INT NOT NULL,
+    ID_ingrediente INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+   
+    FOREIGN KEY (ID_pastel) REFERENCES Pastel(ID_pastel) ON DELETE CASCADE,
+    FOREIGN KEY (ID_ingrediente) REFERENCES Ingrediente(ID_ingrediente) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+

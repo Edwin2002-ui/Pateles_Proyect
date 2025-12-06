@@ -75,3 +75,21 @@ docs/_book
 test/
 
 # End of https://www.toptal.com/developers/gitignore/api/vue
+
+# ------------------------------------------------
+# Node.js y Vue (Faltaba esto)
+# ------------------------------------------------
+# Dependencias (CRÍTICO: Nunca subir esto)
+node_modules/
+
+# Build de producción (tampoco se sube el código compilado)
+dist/
+
+# Logs de debug de npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de sistema locales
+.DS_Store
+Thumbs.db

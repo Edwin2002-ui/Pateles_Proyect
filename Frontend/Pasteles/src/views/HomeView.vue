@@ -11,6 +11,8 @@
     
     <ReposterosView v-if="currentView === 'reposteros'" />
 
+    <ReporteView v-if="currentView === 'estadisticas'"/>
+
   </AppLayout>
 </template>
 
@@ -20,7 +22,8 @@ import AppLayout from '@/layouts/AppLayout.vue';
 // Importamos las vistas
 import PastelesView from '@/views/PastelesView.vue';
 import IngredientesView from '@/views/IngredientesView.vue';
-// import ReposterosView ...
+import ReposterosView from '@/views/ReposterosView.vue';
+import ReporteView from '@/views/ReporteView.vue';
 
 const currentView = ref('pasteles');
 

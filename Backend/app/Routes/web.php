@@ -106,11 +106,19 @@ $router->mount('/pasteles', function() use ($router, $pastelController) {
         
     });
 
-     $router->delete('/(\d+)', function($id) use ($pastelController) {
+    $router->delete('/(\d+)', function($id) use ($pastelController) {
         AuthMiddleware::authenticate(); 
         $pastelController->delete($id);
         
     });
+
+    $router->get('/reporte', function() use ($pastelController) {
+        AuthMiddleware::authenticate(); 
+        $pastelController->reporte();
+        
+    });
+
+
 
 });
 
@@ -148,7 +156,7 @@ $router->mount('/ingredientes', function() use ($router,$ingredienteController){
 });
 
 
-$router->mount('/resposteros', function() use ($router,$reposteroController){
+$router->mount('/reposteros', function() use ($router,$reposteroController){
 
     $router->get('/', function() use ($reposteroController) {
         AuthMiddleware::authenticate(); 

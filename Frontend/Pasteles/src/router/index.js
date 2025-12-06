@@ -13,10 +13,16 @@ const router = createRouter({
       meta: { requireGuest: true }
     },
     {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'), 
+      meta: { requireGuest: true } 
+    },
+    {
       path: '/Home',
       name: 'home',
       component: () => import('../views/HomeView.vue'),
-      meta: { requiresAuth: true } // Metaetiqueta: Requiere autenticación
+      meta: { requiresAuth: true } 
     },
     {
       path: '/:pathMatch(.*)*',

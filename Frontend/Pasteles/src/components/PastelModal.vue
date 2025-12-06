@@ -55,19 +55,24 @@
         </div>
 
         <div>
-           <label class="block text-sm font-medium text-gray-400 mb-2">Preparado por (Repostero)</label>
-           <select 
-              :value="modelValue.Preparado_por"
-              @change="updateField('Preparado_por', $event.target.value)"
-              class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 appearance-none"
-           >
-              <option value="" disabled selected>Selecciona...</option>
-              <option v-for="rep in listaReposteros" :key="rep.id" :value="rep.id">
-                 {{ rep.nombres }} {{ rep.apellidos }}
-              </option>
-           </select>
-        </div>
+            <label class="block text-sm font-medium text-gray-400 mb-2">Preparado por (Repostero)</label>
+            <select 
+                :value="modelValue.Preparado_por"
+                @change="updateField('Preparado_por', $event.target.value)"
+                class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 appearance-none"
+            >
+                <option value="" disabled selected>Selecciona...</option>
+                
+                <option 
+                    v-for="rep in listaReposteros" 
+                    :key="rep.ID_repostero || rep.id" 
+                    :value="rep.ID_repostero || rep.id"
+                >
+                    {{ rep.Nombre || rep.nombres }} {{ rep.Apellido || rep.apellidos }}
+                </option>
 
+            </select>
+          </div>
         <div>
             <label class="block text-sm font-medium text-gray-400 mb-2">Ingredientes Utilizados</label>
             <div class="grid grid-cols-2 gap-2 bg-gray-900 p-3 rounded-lg border border-gray-600 max-h-32 overflow-y-auto">
@@ -107,20 +112,20 @@ const props = defineProps([
     'show', 
     'modelValue', 
     'isEditing', 
-    'listaReposteros',   // Array de objetos { id, nombres, apellidos }
-    'listaIngredientes'  // Array de objetos { ID_ingrediente, Nombre }
+    'listaReposteros',  
+    'listaIngredientes'  
 ]);
 
 const emit = defineEmits(['close', 'save', 'update:modelValue']);
 
-// Función auxiliar para actualizar campos simples
+
 const updateField = (field, value) => {
     emit('update:modelValue', { ...props.modelValue, [field]: value });
 };
 
-// Lógica para el array de IDs de ingredientes (Para la tabla pivote)
+
 const toggleIngrediente = (id) => {
-    // Usamos 'ingredientesIds' para guardar solo los números (IDs)
+    
     let currentIds = props.modelValue.ingredientesIds ? [...props.modelValue.ingredientesIds] : [];
     
     if (currentIds.includes(id)) {

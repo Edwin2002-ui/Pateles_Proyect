@@ -142,6 +142,12 @@ class PastelController{
 
 
     }
+
+
+    public function reporte() {
+        $data = $this->pastelModel->getReporteIngredientes();
+        Response::success('Reporte generado', $data);
+    }
         
     
 

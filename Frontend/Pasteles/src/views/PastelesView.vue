@@ -129,13 +129,13 @@
         </table>
     </div>
 
-    <PastelModal 
+  <PastelModal 
       :show="showModal"
       :is-editing="!!editingPastel"
       v-model="formData"
-      @close="closeModal"
+      :listaReposteros="reposteros"      :listaIngredientes="ingredientes"  @close="closeModal"
       @save="savePastel"
-    />
+  />
   </div>
 </template>
 
@@ -185,35 +185,52 @@ const closeModal = () => showModal.value = false;
 
 </script> -->
 
+
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import api from '@/services/api';
 import PastelModal from '@/components/PastelModal.vue';
-import BaseDrawer from '@/components/BaseDrawer.vue'; // <--- IMPORTAMOS EL NUEVO COMPONENTE GENÉRICO
+import BaseDrawer from '@/components/BaseDrawer.vue';
+import { confirmarAccion, mostrarExito, mostrarError } from '@/utils/alertas';
 import { PlusIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
-// Variables de estado
+
 const pasteles = ref([]);
+const reposteros = ref([]);   
+const ingredientes = ref([]); 
+
 const searchQuery = ref('');
 const showModal = ref(false);
-const showDrawer = ref(false); // Controla si se ve el panel lateral
-const selectedPastel = ref(null); // Guarda los datos del pastel seleccionado
+const showDrawer = ref(false);
+const selectedPastel = ref(null);
 const editingPastel = ref(null);
 const formData = ref({});
 
-// 1. CARGA DE DATOS
-const obtenerPasteles = async () => {
+
+const obtenerDatos = async () => {
   try {
-    const response = await api.get('/pasteles');
-    if (response.data.success) {
-      pasteles.value = response.data.data;
+ 
+    const resPasteles = await api.get('/pasteles');
+    if (resPasteles.data.success) {
+      pasteles.value = resPasteles.data.data;
     }
+
+    const resReposteros = await api.get('/reposteros');
+    if (resReposteros.data.success) {
+      reposteros.value = resReposteros.data.data;
+    }
+
+    const resIngredientes = await api.get('/ingredientes');
+    if (resIngredientes.data.success) {
+      ingredientes.value = resIngredientes.data.data;
+    }
+
   } catch (error) {
     console.error("Error API:", error);
   }
 };
 
-// 2. FILTRADO
+
 const filteredPasteles = computed(() => {
   if (!searchQuery.value) return pasteles.value;
   return pasteles.value.filter(p => 
@@ -221,31 +238,114 @@ const filteredPasteles = computed(() => {
   );
 });
 
-// 3. LOGICA DEL DRAWER (DETALLES)
+
 const viewDetails = (pastel) => {
-  selectedPastel.value = pastel; // Guardamos el pastel clickeado
-  showDrawer.value = true;       // Abrimos el marco genérico
+  selectedPastel.value = pastel;
+  showDrawer.value = true;
 };
 
-// 4. LÓGICA DEL MODAL (EDICIÓN)
 const openModal = () => {
   editingPastel.value = null;
-  formData.value = { Nombre: '', Descripcion: '' }; // Ajusta según tu form real
+  const today = new Date().toISOString().split('T')[0];
+
+ 
+  formData.value = { 
+    Nombre: '', 
+    Descripcion: '', 
+    Fecha_creacion: today,
+    Fecha_Vencimiento: '',
+    Preparado_por: '',      
+    ingredientesIds: [] 
+  };
   showModal.value = true;
 };
 
 const editPastel = (pastel) => {
   editingPastel.value = pastel;
-  formData.value = { ...pastel };
+  const idsIngredientes = pastel.ingredientes ? pastel.ingredientes.map(i => i.ID_ingrediente) : [];
+  formData.value = { ...pastel,ingredientesIds: idsIngredientes, Preparado_por: pastel.ID_repostero};
   showModal.value = true;
 };
 
-// ... Resto de funciones (save, delete, close) ...
 const closeModal = () => showModal.value = false;
-const savePastel = () => { closeModal(); }; // Aquí iría tu lógica POST/PUT
-const deletePastel = (id) => { console.log("Borrar", id); };
+
+
+const savePastel = async () => {
+  try {
+  
+    const datosParaEnviar = {
+      nombre: formData.value.Nombre,
+      descripcion: formData.value.Descripcion,
+      preparado_por: formData.value.Preparado_por,
+      fecha_creacion: formData.value.Fecha_creacion,
+      fecha_vencimiento: formData.value.Fecha_Vencimiento, 
+      ingredientes: formData.value.ingredientesIds || [] 
+    };
+
+    if (!datosParaEnviar.nombre || !datosParaEnviar.preparado_por) {
+      mostrarError("Por favor completa el nombre y el repostero.");
+      return; // Detenemos la función
+    }
+
+    let response;
+
+    if (editingPastel.value) {
+      const id = editingPastel.value.ID_pastel; 
+      response = await api.put(`/pasteles/${id}`, datosParaEnviar);
+      
+    } else {
+      response = await api.post('/pasteles', datosParaEnviar);
+    }
+
+    if (response.data.success) {
+      await obtenerDatos(); 
+      closeModal();      
+      
+      const mensaje = editingPastel.value 
+          ? 'El pastel ha sido actualizado correctamente' 
+          : 'El pastel fue creado con éxito';
+          
+      mostrarExito(mensaje);
+
+    } else {
+      console.error("Error del backend:", response.data.message);
+      mostrarError(response.data.message);
+    }
+
+  } catch (error) {
+    console.error("Error completo:", error);
+    if (error.response) {
+        console.error("Datos del error:", error.response.data);
+        alert("Error del servidor: " + JSON.stringify(error.response.data));
+    } else {
+        alert("Error de conexión");
+    }
+  }
+};
+
+const deletePastel = async (id) => {
+
+  const confirmado = await confirmarAccion('¿Eliminar pastel?', 'Esta acción no se puede deshacer.');
+
+  if (!confirmado) return; 
+
+
+  try {
+    const response = await api.delete(`/pasteles/${id}`);
+    
+    if (response.data.success) {
+  
+      pasteles.value = pasteles.value.filter(p => p.ID_pastel !== id);
+      mostrarExito('Pastel eliminado correctamente');
+    } else {
+      mostrarError('No se pudo eliminar: ' + response.data.message);
+    }
+  } catch (error) {
+    mostrarError('Error de conexión con el servidor');
+  }
+};
 
 onMounted(() => {
-  obtenerPasteles();
+  obtenerDatos(); 
 });
 </script>

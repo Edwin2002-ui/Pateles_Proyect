@@ -23,7 +23,9 @@ class Pastel{
                     p.Fecha_Vencimiento,
                     p.created_at,
                     p.updated_at,
+                    r.id AS ID_repostero, 
                     CONCAT(r.nombres, ' ', r.apellidos) AS Preparado_por,
+                    
                     IFNULL(u.name, 'Usuario Eliminado') AS created_by
                 FROM {$this->table} p
                 INNER JOIN reposteros r ON p.Preparado_por = r.id
@@ -45,6 +47,10 @@ class Pastel{
                         p.Fecha_Vencimiento,
                         p.created_at,
                         p.updated_at,
+                        
+                        -- CAMBIO AQUÍ TAMBIÉN
+                        r.id AS ID_repostero,
+                        
                         IFNULL(CONCAT(r.nombres, ' ', r.apellidos), 'Sin Asignar') AS Preparado_por,
                         IFNULL(u.name, 'Usuario Eliminado') AS created_by
                         
@@ -201,17 +207,48 @@ class Pastel{
 
 
     public function removeAllIngredientes($pastelId) {
-    try {
-        $sql = "DELETE FROM {$this->pivotTable} 
-                WHERE ID_pastel = :id_pastel";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id_pastel', $pastelId);
-        
-        return $stmt->execute();
-    } catch (\PDOException $e) {
-        return false;
+        try {
+            $sql = "DELETE FROM {$this->pivotTable} 
+                    WHERE ID_pastel = :id_pastel";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':id_pastel', $pastelId);
+            
+            return $stmt->execute();
+        } catch (\PDOException $e) {
+            return false;
+        }
     }
-}
+
+    public function getReporteIngredientes() {
+   
+        
+        $sql = "SELECT 
+                    p.ID_pastel,
+                    p.Nombre AS Pastel,
+                    
+                    IFNULL(CONCAT(r.nombres, ' ', r.apellidos), '⚠️ SIN REPOSTERO') AS Repostero,
+                    
+                    IFNULL(GROUP_CONCAT(i.Nombre SEPARATOR ', '), '⚠️ SIN INGREDIENTES') AS Lista_Ingredientes
+
+              
+                FROM pastel p 
+
+                LEFT JOIN reposteros r ON p.Preparado_por = r.id
+                
+                LEFT JOIN pastel_ingredientes pi ON p.ID_pastel = pi.ID_pastel
+                
+        
+                LEFT JOIN ingrediente i ON pi.ID_ingrediente = i.ID_ingrediente
+
+                WHERE p.deleted = 0
+                GROUP BY p.ID_pastel";
+
+     
+        $stmt = $this->db->query($sql);
+        
+      
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0  min-h-full bg-gray-900 font-sans">
+  <div class="fixed inset-0  min-h-full bg-gray-900 font-sans flex flex-col">
     
     <Disclosure as="nav" class="bg-gray-800 border-b border-gray-700 sticky top-0 z-40" v-slot="{ open }">
       <div class="w-full px-4 sm:px-6 lg:px-8">
@@ -32,10 +32,6 @@
           
           <div class="hidden md:block">
             <div class="ml-4 flex items-center gap-6">
-              <button class="relative rounded-full p-2 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors focus:outline-none">
-                <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 ring-2 ring-gray-800"></span>
-                <BellIcon class="h-6 w-6" aria-hidden="true" />
-              </button>
 
               <Menu as="div" class="relative ml-3">
                 <MenuButton class="relative flex items-center gap-3 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800 group transition-all">
@@ -123,7 +119,7 @@
       </div>
     </header>
 
-    <main>
+    <main class="flex-1 overflow-y-auto">
       <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div class="animate-fade-in-up">
             <slot />
@@ -153,7 +149,7 @@ const user = ref(userStr ? JSON.parse(userStr) : {
 
 const userNavigation = [
   { name: 'Ajustes', href: '#' },
-  { name: 'Cerrar Sesión', href: '#', logout: true }, // <--- Agregamos esto
+  { name: 'Cerrar Sesión', href: '#', logout: true }, 
 ];
 
 const props = defineProps({
@@ -173,12 +169,12 @@ const navigation = [
   { name: 'Pasteles', id: 'pasteles' },
   { name: 'Ingredientes', id: 'ingredientes' },
   { name: 'Resposteros', id: 'reposteros' },
-  { name: 'Estadísticas', id: 'estadisticas' },
+  { name: 'Estadisticas', id: 'estadisticas' },
 ]
 </script>
 
 <style scoped>
-/* Animación simple para que el contenido suba suavemente al cargar */
+
 .animate-fade-in-up {
   animation: fadeInUp 0.5s ease-out;
 }

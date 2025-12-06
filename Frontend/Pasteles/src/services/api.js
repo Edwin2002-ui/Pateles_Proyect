@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+
 // Accedemos a la variable de entorno usando import.meta.env
 const api = axios.create({
-    baseURL: 'http://pateles_proyect.test/Backend/public', 
+    baseURL: 'http://cakes.test/Backend/public', 
+    // baseURL: process.env.VITE_API_URL,
+
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

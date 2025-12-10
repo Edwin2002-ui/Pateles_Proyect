@@ -39,6 +39,11 @@ Si importaste el dump de datos, puedes iniciar sesión  con el siguiente usuario
 
 #### Variables de Entorno (.env)
 Configura tu archivo `.env` (o renombra el de ejemplo) con los siguientes puntos clave:
+#### Isntalacion de packetes de composer
+Ejecutar el comando :
+```bash
+composer install
+```
 
 **A. URL de la Aplicación (`APP_URL`)**
 Dependiendo de tu servidor local, ajusta la variable `APP_URL` a la ruta raíz del backend:

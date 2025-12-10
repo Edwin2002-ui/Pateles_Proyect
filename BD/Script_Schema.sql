@@ -17,7 +17,7 @@ CREATE TABLE users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
---2. TABLA RESPOSTEROS
+
 CREATE TABLE reposteros(
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombres VARCHAR(255) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE Pastel (
     deleted_at DATETIME NULL,
     deleted BOOLEAN DEFAULT FALSE,
    
-    FOREIGN KEY (Preparado_por) REFERENCES reposteros(id) ON DELETE RESTRICT
+    FOREIGN KEY (Preparado_por) REFERENCES reposteros(id) ON DELETE RESTRICT,
     FOREIGN KEY (created_by) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -75,5 +75,3 @@ CREATE TABLE Pastel_Ingredientes (
     FOREIGN KEY (ID_pastel) REFERENCES Pastel(ID_pastel) ON DELETE CASCADE,
     FOREIGN KEY (ID_ingrediente) REFERENCES Ingrediente(ID_ingrediente) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-

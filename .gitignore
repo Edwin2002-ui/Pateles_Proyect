@@ -14,7 +14,7 @@
 # Composer
 # ------------------------------------------------
 # Ignora la carpeta donde se descargan las librerías
-/vendor/
+vendor/
 
 # Ignora el archivo ejecutable de composer si lo tienes localmente
 composer.phar
